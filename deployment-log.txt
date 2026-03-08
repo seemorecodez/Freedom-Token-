@@ -1,0 +1,79 @@
+
+> freedomtoken-deploy@1.0.0 deploy:all
+> node scripts/deploy-all.js
+
+[2026-03-08T19:26:22.316Z] 
+╔════════════════════════════════════════════════╗
+[2026-03-08T19:26:22.319Z] ║   FreedomToken Production Deployment           ║
+[2026-03-08T19:26:22.319Z] ╚════════════════════════════════════════════════╝
+[2026-03-08T19:26:22.319Z] 
+📋 STEP 1: Environment Verification
+[2026-03-08T19:26:22.365Z] ✓ Deployer: 0x9266517705601Af7D68955cCbCe2454787d7084B
+[2026-03-08T19:26:22.365Z] ✓ Treasury: 0x32e9477d0887dFA680d145bE13802FB6Aa15679A
+[2026-03-08T19:26:22.365Z] ✓ AI Bot: 0x46c92f42e3c1eb45e68ee54518362B7c481A7df2
+[2026-03-08T19:26:22.365Z] ✓ User: 0xd24ba953aDE3106C9c7cA8bB0716982A0702E1EF
+[2026-03-08T19:26:22.365Z] ✓ FreedomToken artifact ready
+[2026-03-08T19:26:22.366Z] ✓ GasDAO artifact ready
+[2026-03-08T19:26:22.366Z] ✓ AITreasury artifact ready
+[2026-03-08T19:26:22.366Z] ✓ GaslessRelayer artifact ready
+[2026-03-08T19:26:22.457Z] 
+💰 Deployer Balance: 0.0863 ETH
+[2026-03-08T19:26:22.457Z] 
+📊 Pre-deployment Summary:
+[2026-03-08T19:26:22.457Z]    Deployer: 0x9266517705601Af7D68955cCbCe2454787d7084B
+[2026-03-08T19:26:22.457Z]    Balance: 0.0863 ETH
+[2026-03-08T19:26:22.457Z]    Network: Sepolia Testnet
+[2026-03-08T19:26:22.457Z]    Contracts: 4 to deploy
+[2026-03-08T19:26:22.457Z] 
+🚀 Deploying FreedomToken...
+[2026-03-08T19:26:22.591Z]    Transaction: 0xd5d681243c6642724d10c8cbde04a6344e2bacde640c6e73776b817b77017033
+[2026-03-08T19:26:22.591Z]    Waiting for confirmation...
+[2026-03-08T19:26:38.697Z] ✓ FreedomToken deployed at: 0xb3b8f96925eed295afb1b9d7b72a0450df6f8509
+[2026-03-08T19:26:38.714Z]    Gas used: 2,475,835 (~0.000003 ETH)
+[2026-03-08T19:26:38.714Z] 
+🚀 Deploying GasDAO...
+[2026-03-08T19:26:38.804Z]    Transaction: 0xad49ec800e4217269c4623b5c57ba2ecef20a4e94bd288e2562f4fcce35fa20e
+[2026-03-08T19:26:38.804Z]    Waiting for confirmation...
+[2026-03-08T19:26:50.899Z] ✓ GasDAO deployed at: 0xf12b4f84e83c11d883a6f76e2cfa7888d4d575c0
+[2026-03-08T19:26:50.899Z]    Gas used: 2,678,330 (~0.000003 ETH)
+[2026-03-08T19:26:50.900Z] 
+🚀 Deploying AITreasury...
+[2026-03-08T19:26:50.972Z]    Transaction: 0xc62488313be289744ab8662f8a7d8d980263cd591ef1483d7a25acff91aad2f5
+[2026-03-08T19:26:50.972Z]    Waiting for confirmation...
+[2026-03-08T19:27:03.059Z] ✓ AITreasury deployed at: 0xa9485c8996a6f8ec5b8e70fd0b347a2d87aa4194
+[2026-03-08T19:27:03.059Z]    Gas used: 2,910,712 (~0.000003 ETH)
+[2026-03-08T19:27:03.059Z] 
+🚀 Deploying GaslessRelayer...
+[2026-03-08T19:27:03.118Z]    Transaction: 0x7ce92cf82ce4cd4885e499988515a37fa64e992aed2e27f9a31117b5bf741e5e
+[2026-03-08T19:27:03.118Z]    Waiting for confirmation...
+[2026-03-08T19:27:15.192Z] ✓ GaslessRelayer deployed at: 0xd138d1e06d1b98270dec55546b0a00f97a7505f4
+[2026-03-08T19:27:15.192Z]    Gas used: 2,713,634 (~0.000003 ETH)
+[2026-03-08T19:27:15.194Z] 
+════════════════════════════════════════════════════════════
+[2026-03-08T19:27:15.194Z] 🎉 DEPLOYMENT COMPLETE
+[2026-03-08T19:27:15.194Z] ════════════════════════════════════════════════════════════
+[2026-03-08T19:27:15.194Z] 
+📋 Contract Addresses:
+[2026-03-08T19:27:15.194Z]    FreedomToken: 0xb3b8f96925eed295afb1b9d7b72a0450df6f8509
+[2026-03-08T19:27:15.194Z]    GasDAO: 0xf12b4f84e83c11d883a6f76e2cfa7888d4d575c0
+[2026-03-08T19:27:15.194Z]    AITreasury: 0xa9485c8996a6f8ec5b8e70fd0b347a2d87aa4194
+[2026-03-08T19:27:15.194Z]    GaslessRelayer: 0xd138d1e06d1b98270dec55546b0a00f97a7505f4
+[2026-03-08T19:27:15.194Z] 
+💰 Total Gas Used: 10,778,511
+[2026-03-08T19:27:15.194Z] 
+📁 Deployment Record:
+[2026-03-08T19:27:15.194Z]    deployments/sepolia-1772998035192.json
+[2026-03-08T19:27:15.194Z] 
+🔗 View on Etherscan:
+[2026-03-08T19:27:15.194Z]    FreedomToken: https://sepolia.etherscan.io/address/0xb3b8f96925eed295afb1b9d7b72a0450df6f8509
+[2026-03-08T19:27:15.194Z]    GasDAO: https://sepolia.etherscan.io/address/0xf12b4f84e83c11d883a6f76e2cfa7888d4d575c0
+[2026-03-08T19:27:15.194Z]    AITreasury: https://sepolia.etherscan.io/address/0xa9485c8996a6f8ec5b8e70fd0b347a2d87aa4194
+[2026-03-08T19:27:15.194Z]    GaslessRelayer: https://sepolia.etherscan.io/address/0xd138d1e06d1b98270dec55546b0a00f97a7505f4
+[2026-03-08T19:27:15.194Z] 
+✅ Next Steps:
+[2026-03-08T19:27:15.194Z]    1. Verify contracts on Etherscan
+[2026-03-08T19:27:15.194Z]    2. Run integration tests
+[2026-03-08T19:27:15.194Z]    3. Submit grant applications
+[2026-03-08T19:27:15.194Z]    4. Gather community feedback
+[2026-03-08T19:27:15.194Z] 
+════════════════════════════════════════════════════════════

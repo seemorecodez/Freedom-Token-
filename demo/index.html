@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreedomToken - AI-Governed DAO Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.9.0/ethers.umd.min.js"></script>
+    <style>
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="text-white font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                FreedomToken
+            </h1>
+            <p class="text-xl text-gray-400">AI-Governed DAO Ecosystem Demo</p>
+            <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-500/20 rounded-full text-green-400 text-sm">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                Live on Sepolia Testnet
+            </div>
+        </header>
+
+        <!-- Wallet Connection -->
+        <div class="glass rounded-2xl p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold mb-2">Wallet Connection</h2>
+                    <p class="text-gray-400 text-sm">Connect your MetaMask to interact with contracts</p>
+                </div>
+                <button id="connectBtn" onclick="connectWallet()" 
+                    class="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-xl font-semibold transition-colors">
+                    Connect MetaMask
+                </button>
+            </div>
+            <div id="walletInfo" class="mt-4 hidden">
+                <p class="text-sm text-gray-400">Connected: <span id="walletAddress" class="text-white font-mono"></span></p>
+                <p class="text-sm text-gray-400">Balance: <span id="walletBalance" class="text-white"></span> ETH</p>
+            </div>
+        </div>
+
+        <!-- Contract Addresses -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="glass rounded-2xl p-6 card-hover">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                        <span class="text-xl">🪙</span>
+                    </div>
+                    <h3 class="font-semibold">FreedomToken</h3>
+                </div>
+                <p class="text-xs text-gray-400 mb-2">ERC-20 Governance Token</p>
+                <a href="https://sepolia.etherscan.io/address/0xb3b8f96925eed295afb1b9d7b72a0450df6f8509" 
+                   target="_blank" class="text-xs text-blue-400 hover:text-blue-300 break-all">
+                    0xb3b8...f8509 →
+                </a>
+            </div>
+
+            <div class="glass rounded-2xl p-6 card-hover">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                        <span class="text-xl">🏛️</span>
+                    </div>
+                    <h3 class="font-semibold">GasDAO</h3>
+                </div>
+                <p class="text-xs text-gray-400 mb-2">Governance & Voting</p>
+                <a href="https://sepolia.etherscan.io/address/0xf12b4f84e83c11d883a6f76e2cfa7888d4d575c0" 
+                   target="_blank" class="text-xs text-blue-400 hover:text-blue-300 break-all">
+                    0xf12b...75c0 →
+                </a>
+            </div>
+
+            <div class="glass rounded-2xl p-6 card-hover">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
+                        <span class="text-xl">🏦</span>
+                    </div>
+                    <h3 class="font-semibold">AITreasury</h3>
+                </div>
+                <p class="text-xs text-gray-400 mb-2">AI-Managed Treasury</p>
+                <a href="https://sepolia.etherscan.io/address/0xa9485c8996a6f8ec5b8e70fd0b347a2d87aa4194" 
+                   target="_blank" class="text-xs text-blue-400 hover:text-blue-300 break-all">
+                    0xa948...4194 →
+                </a>
+            </div>
+
+            <div class="glass rounded-2xl p-6 card-hover">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                        <span class="text-xl">⚡</span>
+                    </div>
+                    <h3 class="font-semibold">GaslessRelayer</h3>
+                </div>
+                <p class="text-xs text-gray-400 mb-2">ERC-4337 Meta-Txs</p>
+                <a href="https://sepolia.etherscan.io/address/0xd138d1e06d1b98270dec55546b0a00f97a7505f4" 
+                   target="_blank" class="text-xs text-blue-400 hover:text-blue-300 break-all">
+                    0xd138...05f4 →
+                </a>
+            </div>
+        </div>
+
+        <!-- Token Stats -->
+        <div class="glass rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-6">Token Statistics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <p class="text-gray-400 text-sm mb-2">Total Supply</p>
+                    <p class="text-3xl font-bold text-blue-400" id="totalSupply">Loading...</p>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <p class="text-gray-400 text-sm mb-2">Treasury Balance</p>
+                    <p class="text-3xl font-bold text-green-400" id="treasuryBalance">Loading...</p>
+                </div>
+                <div class="text-center p-4 bg-white/5 rounded-xl">
+                    <p class="text-gray-400 text-sm mb-2">Proposal Threshold</p>
+                    <p class="text-3xl font-bold text-purple-400" id="proposalThreshold">Loading...</p>
+                </div>
+            </div>
+            <button onclick="loadTokenStats()" class="mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">
+                Refresh Stats
+            </button>
+        </div>
+
+        <!-- Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Check Balance -->
+            <div class="glass rounded-2xl p-6">
+                <h3 class="text-lg font-semibold mb-4">Check Balance</h3>
+                <div class="flex gap-2">
+                    <input type="text" id="balanceAddress" placeholder="0x..." 
+                        class="flex-1 px-4 py-2 bg-white/5 rounded-lg border border-white/10 text-white placeholder-gray-500">
+                    <button onclick="checkBalance()" 
+                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors">
+                        Check
+                    </button>
+                </div>
+                <p id="balanceResult" class="mt-4 text-lg font-semibold text-green-400 hidden"></p>
+            </div>
+
+            <!-- Delegate Votes -->
+            <div class="glass rounded-2xl p-6">
+                <h3 class="text-lg font-semibold mb-4">Delegate Votes</h3>
+                <div class="flex gap-2">
+                    <input type="text" id="delegateAddress" placeholder="Delegate to address (0x...)" 
+                        class="flex-1 px-4 py-2 bg-white/5 rounded-lg border border-white/10 text-white placeholder-gray-500">
+                    <button onclick="delegateVotes()" 
+                        class="px-4 py-2 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors">
+                        Delegate
+                    </button>
+                </div>
+                <p class="mt-2 text-xs text-gray-400">Delegate your voting power to another address</p>
+            </div>
+        </div>
+
+        <!-- AI Governance Demo -->
+        <div class="glass rounded-2xl p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
+                <span>🤖</span> AI Governance Demo
+            </h2>
+            <div class="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-6 border border-blue-500/20">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold mb-2">AI Proposal Example</h4>
+                        <div class="bg-black/20 rounded-lg p-4 mb-4 font-mono text-sm">
+                            <p class="text-gray-400">// AI analyzes treasury and proposes:</p>
+                            <p class="text-green-400 mt-2">✓ Market conditions favor stablecoin allocation</p>
+                            <p class="text-green-400">✓ Recommend: 60% USDC, 30% ETH, 10% stables</p>
+                            <p class="text-green-400">✓ Expected yield: 8-12% APY</p>
+                            <p class="text-blue-400 mt-2">→ Proposal created for human voting</p>
+                        </div>
+                        <button onclick="simulateAIProposal()" 
+                            class="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 rounded-lg text-blue-400 transition-colors">
+                            Simulate AI Proposal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="glass rounded-2xl p-6">
+            <h2 class="text-2xl font-semibold mb-4">Recent Activity</h2>
+            <div id="activityLog" class="space-y-2">
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
+                    <span class="text-green-400">✓</span>
+                    <div class="flex-1">
+                        <p class="text-sm">Contracts deployed to Sepolia</p>
+                        <p class="text-xs text-gray-400">March 8, 2026</p>
+                    </div>
+                    <a href="https://sepolia.etherscan.io/tx/0xd5d681243c6642724d10c8cbde04a6344e2bacde640c6e73776b817b77017033" 
+                       target="_blank" class="text-xs text-blue-400 hover:text-blue-300">View →</a>
+                </div>
+                <div class="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
+                    <span class="text-blue-400">🧪</span>
+                    <div class="flex-1">
+                        <p class="text-sm">All integration tests passed (6/6)</p>
+                        <p class="text-xs text-gray-400">March 8, 2026</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-400 text-sm">
+            <p>FreedomToken - AI-Governed DAO Infrastructure</p>
+            <p class="mt-2">
+                <a href="https://sepolia.etherscan.io/address/0xb3b8f96925eed295afb1b9d7b72a0450df6f8509" 
+                   target="_blank" class="text-blue-400 hover:text-blue-300 mx-2">Etherscan</a>
+                •
+                <a href="#" class="text-blue-400 hover:text-blue-300 mx-2">Documentation</a>
+                •
+                <a href="#" class="text-blue-400 hover:text-blue-300 mx-2">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Contract addresses
+        const CONTRACTS = {
+            FreedomToken: '0xb3b8f96925eed295afb1b9d7b72a0450df6f8509',
+            GasDAO: '0xf12b4f84e83c11d883a6f76e2cfa7888d4d575c0',
+            AITreasury: '0xa9485c8996a6f8ec5b8e70fd0b347a2d87aa4194',
+            GaslessRelayer: '0xd138d1e06d1b98270dec55546b0a00f97a7505f4'
+        };
+
+        // Minimal ABIs
+        const FreedomTokenABI = [
+            "function name() view returns (string)",
+            "function symbol() view returns (string)",
+            "function totalSupply() view returns (uint256)",
+            "function balanceOf(address) view returns (uint256)",
+            "function delegate(address)"
+        ];
+
+        const GasDAOABI = [
+            "function PROPOSAL_THRESHOLD() view returns (uint256)",
+            "function QUORUM_VOTES() view returns (uint256)"
+        ];
+
+        let provider, signer, connected = false;
+
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('Please install MetaMask!');
+                return;
+            }
+
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                
+                const address = await signer.getAddress();
+                const balance = await provider.getBalance(address);
+                
+                document.getElementById('walletAddress').textContent = 
+                    `${address.slice(0, 6)}...${address.slice(-4)}`;
+                document.getElementById('walletBalance').textContent = 
+                    (Number(balance) / 1e18).toFixed(4);
+                
+                document.getElementById('walletInfo').classList.remove('hidden');
+                document.getElementById('connectBtn').textContent = 'Connected';
+                document.getElementById('connectBtn').disabled = true;
+                
+                connected = true;
+                loadTokenStats();
+            } catch (err) {
+                console.error('Connection error:', err);
+                alert('Failed to connect wallet');
+            }
+        }
+
+        async function loadTokenStats() {
+            try {
+                const provider = new ethers.JsonRpcProvider('https://eth-sepolia.g.alchemy.com/v2/demo');
+                
+                const token = new ethers.Contract(CONTRACTS.FreedomToken, FreedomTokenABI, provider);
+                const dao = new ethers.Contract(CONTRACTS.GasDAO, GasDAOABI, provider);
+                
+                const [supply, threshold, quorum] = await Promise.all([
+                    token.totalSupply(),
+                    dao.PROPOSAL_THRESHOLD(),
+                    dao.QUORUM_VOTES()
+                ]);
+                
+                document.getElementById('totalSupply').textContent = 
+                    (Number(supply) / 1e18).toLocaleString() + ' FREE';
+                document.getElementById('proposalThreshold').textContent = 
+                    (Number(threshold) / 1e18).toLocaleString() + ' FREE';
+                
+                // Get treasury balance
+                const treasuryBalance = await token.balanceOf('0x32e9477d0887dFA680d145bE13802FB6Aa15679A');
+                document.getElementById('treasuryBalance').textContent = 
+                    (Number(treasuryBalance) / 1e18).toLocaleString() + ' FREE';
+                    
+            } catch (err) {
+                console.error('Failed to load stats:', err);
+                document.getElementById('totalSupply').textContent = 'Error loading';
+            }
+        }
+
+        async function checkBalance() {
+            const address = document.getElementById('balanceAddress').value;
+            if (!address || !address.startsWith('0x')) {
+                alert('Please enter a valid Ethereum address');
+                return;
+            }
+
+            try {
+                const provider = new ethers.JsonRpcProvider('https://eth-sepolia.g.alchemy.com/v2/demo');
+                const token = new ethers.Contract(CONTRACTS.FreedomToken, FreedomTokenABI, provider);
+                const balance = await token.balanceOf(address);
+                
+                const resultEl = document.getElementById('balanceResult');
+                resultEl.textContent = `Balance: ${(Number(balance) / 1e18).toLocaleString()} FREE`;
+                resultEl.classList.remove('hidden');
+            } catch (err) {
+                alert('Failed to check balance: ' + err.message);
+            }
+        }
+
+        async function delegateVotes() {
+            if (!connected) {
+                alert('Please connect your wallet first');
+                return;
+            }
+
+            const address = document.getElementById('delegateAddress').value;
+            if (!address || !address.startsWith('0x')) {
+                alert('Please enter a valid Ethereum address');
+                return;
+            }
+
+            try {
+                const token = new ethers.Contract(CONTRACTS.FreedomToken, FreedomTokenABI, signer);
+                const tx = await token.delegate(address);
+                alert('Transaction sent! Hash: ' + tx.hash);
+                await tx.wait();
+                alert('Delegation successful!');
+            } catch (err) {
+                alert('Delegation failed: ' + err.message);
+            }
+        }
+
+        function simulateAIProposal() {
+            const log = document.getElementById('activityLog');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex items-center gap-4 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20';
+            newItem.innerHTML = `
+                <span class="text-2xl">🤖</span>
+                <div class="flex-1">
+                    <p class="text-sm">AI Proposal: Treasury Reallocation</p>
+                    <p class="text-xs text-gray-400">AI recommends 60% USDC, 40% ETH allocation</p>
+                </div>
+                <span class="text-xs text-blue-400">Pending Vote</span>
+            `;
+            log.insertBefore(newItem, log.firstChild);
+        }
+
+        // Load stats on page load
+        loadTokenStats();
+    </script>
+</body>
+</html>

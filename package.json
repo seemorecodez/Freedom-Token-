@@ -1,0 +1,21 @@
+{
+  "name": "freedomtoken-deploy",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "compile": "forge build --optimize --via-ir",
+    "deploy:all": "node scripts/deploy-all.js",
+    "verify": "forge verify-contract",
+    "test": "forge test",
+    "slither": "slither contracts/ --solc-remaps '@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/' --solc-args '--via-ir --optimize'",
+    "clean": "forge clean"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.6.1",
+    "dotenv": "^16.4.0",
+    "viem": "^2.14.0"
+  },
+  "devDependencies": {
+    "forge-std": "github:foundry-rs/forge-std"
+  }
+}
