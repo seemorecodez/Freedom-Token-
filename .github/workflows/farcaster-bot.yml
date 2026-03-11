@@ -1,0 +1,105 @@
+name: Farcaster Bot - Auto Post
+
+on:
+  schedule:
+    # Run every 4 hours (randomized content makes it look natural)
+    - cron: '0 */4 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  post-to-farcaster:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: pip install requests
+      
+    - name: Post to Farcaster
+      env:
+        NEYNAR_API_KEY: ${{ secrets.NEYNAR_API_KEY }}
+        NEYNAR_SIGNER_UUID: ${{ secrets.NEYNAR_SIGNER_UUID }}
+      run: |
+        python3 << 'PYCODE'
+        import requests
+        import random
+        import os
+        import sys
+        
+        # Content templates
+        CASTS = [
+            "🚀 FreedomToken: Decentralized governance powered by AI. Building the future of community-owned economies. #FreedomToken #Web3",
+            "💡 What if your community could govern itself? FreedomToken makes it possible with on-chain voting. #DAO #Governance",
+            "🔒 Security meets decentralization. FreedomToken's smart contracts are audited and live. #DeFi #Blockchain",
+            "⚡ Zero gas + AI decisions = the future of DAOs. Follow FreedomToken's journey. #Ethereum",
+            "🗳️ One token, one vote. FreedomToken puts governance power in the community's hands. #Web3",
+            "🤖 AI + Human governance = unstoppable. Our treasury is managed by smart contracts. #FreedomToken",
+            "💰 Stake. Vote. Govern. That's FreedomToken. Decentralized finance for everyone.",
+            "🌐 Building infrastructure for community-owned economies. No middlemen, just code. #Crypto",
+            "📊 Transparent treasury, on-chain voting, immutable records. FreedomToken is open source.",
+            "🎯 Mission: Financial freedom through decentralized governance. Join FreedomToken!",
+        ]
+        
+        api_key = os.environ.get('NEYNAR_API_KEY')
+        signer_uuid = os.environ.get('NEYNAR_SIGNER_UUID')
+        
+        if not api_key:
+            print("❌ ERROR: NEYNAR_API_KEY not set")
+            print("Add it in GitHub Settings → Secrets and variables → Actions")
+            sys.exit(1)
+            
+        if not signer_uuid:
+            print("❌ ERROR: NEYNAR_SIGNER_UUID not set")
+            print("Get it from Neynar dashboard and add to GitHub Secrets")
+            sys.exit(1)
+        
+        # Select random cast
+        cast_text = random.choice(CASTS)
+        
+        # Add emoji 30% of the time
+        emojis = ['🚀', '💡', '🔒', '⚡', '🗳️', '🤖', '💰', '🌐', '📊', '🎯']
+        if random.random() < 0.3:
+            cast_text = f"{random.choice(emojis)} {cast_text}"
+        
+        print(f"Posting: {cast_text[:60]}...")
+        
+        # Post to Farcaster
+        url = "https://api.neynar.com/v2/farcaster/cast"
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "x-api-key": api_key
+        }
+        payload = {
+            "signer_uuid": signer_uuid,
+            "text": cast_text
+        }
+        
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            
+            if response.status_code == 200:
+                data = response.json()
+                cast_hash = data.get('cast', {}).get('hash', 'unknown')
+                print(f"✅ SUCCESS! Cast posted!")
+                print(f"🔗 Hash: {cast_hash}")
+                print(f"🌐 https://warpcast.com/~/conversations/{cast_hash}")
+            else:
+                print(f"❌ FAILED: {response.status_code}")
+                print(f"Response: {response.text[:300]}")
+                sys.exit(1)
+                
+        except Exception as e:
+            print(f"❌ ERROR: {e}")
+            sys.exit(1)
+        PYCODE
+        
+    - name: Log completion
+      run: echo "Farcaster bot completed at $(date)"
